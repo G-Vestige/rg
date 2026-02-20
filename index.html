@@ -277,7 +277,7 @@
                 </div>
                 <div class="stat-row">
                     <span class="stat-label">NIVEL DESBLOQUEADO:</span>
-                    <span id="sys-status-text" class="stat-value" style="color: yellow">39 AÑOS 🥳🎉</span>
+                    <span class="stat-value" style="color: var(--gold); text-shadow: 0 0 10px var(--gold);">39 AÑOS</span>
                 </div>
                 <div class="stat-row">
                     <span class="stat-label">STATUS:</span>
@@ -363,6 +363,7 @@
                 const speed = Math.random() * 5 + 1;
                 this.vx = Math.cos(angle) * speed;
                 this.vy = Math.sin(angle) * speed;
+                this.vy += 0.05; // Gravedad
                 this.alpha = 1;
                 this.decay = Math.random() * 0.015 + 0.005;
                 this.char = Math.random() > 0.5 ? "1" : "0"; // Partículas son binarias
