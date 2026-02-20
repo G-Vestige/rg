@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SYSTEM_RESTORE: EDWARD_BETANCOURT_2026</title>
+    <style>
+        /* Variables Institucionales */
+        :root {
+            --bg-color: #05050a;
+            --matrix-green: #00ff41;
+            --glitch-red: #ff3232;
+            --cyan-core: #00ffff;
+            --gold: #ffd700;
+            --white: #f0f0ff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--matrix-green);
+            font-family: 'Courier New', Courier, monospace;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Capa de Efecto CRT */
+        body::after {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 10;
+            background-size: 100% 4px, 3px 100%;
+            pointer-events: none;
+        }
+
+        #canvas-bg {
+            position: absolute;
+            top: 0; left: 0;
+            z-index: 1;
+        }
+
+        /* Contenedor de Mensaje */
+        #message-container {
+            position: relative;
+            z-index: 5;
+            width: 90%;
+            max-width: 800px;
+            background: rgba(5, 15, 25, 0.85);
+            padding: 40px;
+            border: 2px solid var(--cyan-core);
+            box-shadow: 0 0 20px var(--cyan-core);
+            display: none; /* Se activa por JS */
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .glitch-text {
+            animation: glitch 1s linear infinite;
+        }
+
+        @keyframes glitch {
+            2%, 64% { transform: translate(2px, 0) skew(0deg); }
+            4%, 60% { transform: translate(-2px, 0) skew(0deg); }
+            62% { transform: translate(0, 0) skew(5deg); }
+        }
+
+        .line {
+            min-height: 1.2em;
+            line-height: 1.5;
+            font-weight: bold;
+        }
+
+        .highlight-cyan { color: var(--cyan-core); text-shadow: 0 0 5px var(--cyan-core); }
+        .highlight-gold { color: var(--gold); text-shadow: 0 0 5px var(--gold); }
+        .highlight-ronny { color: var(--matrix-green); }
+
+        /* Botón Inicial para cumplir políticas de audio/interacción */
+        #boot-button {
+            z-index: 100;
+            padding: 20px 40px;
+            background: transparent;
+            color: var(--matrix-green);
+            border: 2px solid var(--matrix-green);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+        }
+
+        #boot-button:hover {
+            background: var(--matrix-green);
+            color: var(--bg-color);
+            box-shadow: 0 0 30px var(--matrix-green);
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="canvas-bg"></canvas>
+
+    <button id="boot-button">Initialize_Legacy_v2026.exe</button>
+
+    <div id="message-container">
+        <div id="terminal-content"></div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas-bg');
+        const ctx = canvas.getContext('2d');
+        const bootBtn = document.getElementById('boot-button');
+        const messageContainer = document.getElementById('message-container');
+        const terminal = document.getElementById('terminal-content');
+
+        let width, height, columns;
+        const fontSize = 16;
+        let drops = [];
+        let state = 'INIT'; // INIT, CRASH, RECOVERY
+        
+        const messageLines = [
+            { text: "SOLICITANDO ACCESO A MEMORIA NUCLEO...", type: "sys" },
+            { text: "USUARIO IDENTIFICADO: EDWARD BETANCOURT", type: "cyan" },
+            { text: "", type: "gap" },
+            { text: "Edward, he auditado los logs de este ciclo.", type: "white" },
+            { text: "Se que la vida te ha dado momentos fuertes,", type: "white" },
+            { text: "obstaculos que habrian detenido cualquier proceso.", type: "white" },
+            { text: "Pero tu has sido mas fuerte que cada uno de ellos.", type: "gold" },
+            { text: "", type: "gap" },
+            { text: "Has superado cada error de sistema con integridad.", type: "white" },
+            { text: "Que este nuevo año sea de bendiciones exponenciales", type: "white" },
+            { text: "y exito total para tu vida y tu familia.", type: "white" },
+            { text: "", type: "gap" },
+            { text: "Se te aprecia mucho. Feliz Cumpleaños Primo.", type: "cyan" },
+            { text: "", type: "gap" },
+            { text: "Att: Ronny G. [ADMIN_ACCESS]", type: "ronny" }
+        ];
+
+        function initCanvas() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            columns = Math.floor(width / fontSize);
+            drops = Array(columns).fill(1);
+        }
+
+        window.addEventListener('resize', initCanvas);
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(5, 5, 10, 0.1)';
+            ctx.fillRect(0, 0, width, height);
+
+            ctx.font = fontSize + 'px monospace';
+            
+            for (let i = 0; i < drops.length; i++) {
+                const text = Math.floor(Math.random() * 2);
+                
+                if (state === 'CRASH') {
+                    ctx.fillStyle = '#ff3232';
+                } else if (state === 'RECOVERY') {
+                    ctx.fillStyle = '#004466';
+                } else {
+                    ctx.fillStyle = '#00ff41';
+                }
+
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                if (drops[i] * fontSize > height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        function typeMessage() {
+            let lineIdx = 0;
+            messageContainer.style.display = 'flex';
+            
+            function printLine() {
+                if (lineIdx < messageLines.length) {
+                    const lineData = messageLines[lineIdx];
+                    const div = document.createElement('div');
+                    div.className = 'line';
+                    
+                    if (lineData.type === 'cyan') div.classList.add('highlight-cyan');
+                    if (lineData.type === 'gold') div.classList.add('highlight-gold');
+                    if (lineData.type === 'ronny') div.classList.add('highlight-ronny');
+                    
+                    terminal.appendChild(div);
+                    
+                    let charIdx = 0;
+                    function typeChar() {
+                        if (charIdx < lineData.text.length) {
+                            div.textContent += lineData.text[charIdx];
+                            charIdx++;
+                            setTimeout(typeChar, 30);
+                        } else {
+                            lineIdx++;
+                            setTimeout(printLine, 400);
+                        }
+                    }
+                    typeChar();
+                }
+            }
+            printLine();
+        }
+
+        function startSequence() {
+            bootBtn.style.display = 'none';
+            state = 'INIT';
+            
+            // Secuencia de tiempos
+            setTimeout(() => {
+                state = 'CRASH'; // Inicia distorsión
+            }, 3000);
+
+            setTimeout(() => {
+                state = 'RECOVERY'; // Estabilización
+                typeMessage();
+            }, 6000);
+
+            setInterval(drawMatrix, 50);
+        }
+
+        bootBtn.addEventListener('click', startSequence);
+        initCanvas();
+
+    </script>
+</body>
+</html>
