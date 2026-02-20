@@ -3,24 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SYSTEM_RESTORE: EDWARD_BETANCOURT_2026</title>
+    <title>CORE_RECOVERY | EDWARD_BETANCOURT</title>
     <style>
-        /* Variables Institucionales */
         :root {
-            --bg-color: #05050a;
-            --matrix-green: #00ff41;
-            --glitch-red: #ff3232;
-            --cyan-core: #00ffff;
-            --gold: #ffd700;
-            --white: #f0f0ff;
+            --bg-color: #020205;
+            --matrix-color: #00ff41;
+            --glitch-color: #ff003c;
+            --recovery-color: #00f2ff;
+            --gold: #ffcc00;
+            --font-main: 'Fira Code', 'Courier New', monospace;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             background-color: var(--bg-color);
-            color: var(--matrix-green);
-            font-family: 'Courier New', Courier, monospace;
+            color: var(--matrix-color);
+            font-family: var(--font-main);
             overflow: hidden;
             height: 100vh;
             display: flex;
@@ -28,148 +27,166 @@
             align-items: center;
         }
 
-        /* Capa de Efecto CRT */
-        body::after {
+        /* Efecto de Escaneo CRT */
+        body::before {
             content: " ";
             display: block;
             position: absolute;
             top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
-                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            z-index: 10;
-            background-size: 100% 4px, 3px 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            z-index: 100;
+            background-size: 100% 3px, 3px 100%;
             pointer-events: none;
         }
 
-        #canvas-bg {
+        canvas {
             position: absolute;
             top: 0; left: 0;
             z-index: 1;
         }
 
-        /* Contenedor de Mensaje */
-        #message-container {
+        /* Botón de Inicialización */
+        #boot-btn {
+            z-index: 101;
+            padding: 15px 30px;
+            background: transparent;
+            color: var(--matrix-color);
+            border: 1px solid var(--matrix-color);
+            font-family: var(--font-main);
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 0 10px var(--matrix-color);
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+
+        #boot-btn:hover {
+            background: var(--matrix-color);
+            color: var(--bg-color);
+            box-shadow: 0 0 30px var(--matrix-color);
+        }
+
+        /* Contenedor del Mensaje Mejorado */
+        #terminal-container {
             position: relative;
-            z-index: 5;
-            width: 90%;
-            max-width: 800px;
-            background: rgba(5, 15, 25, 0.85);
+            z-index: 50;
+            width: 85%;
+            max-width: 900px;
+            background: rgba(2, 2, 5, 0.9);
+            border: 1px solid var(--recovery-color);
+            box-shadow: 0 0 40px rgba(0, 242, 255, 0.2);
             padding: 40px;
-            border: 2px solid var(--cyan-core);
-            box-shadow: 0 0 20px var(--cyan-core);
-            display: none; /* Se activa por JS */
-            flex-direction: column;
-            gap: 20px;
+            display: none; /* Inicia oculto */
+            backdrop-filter: blur(10px);
+            border-radius: 4px;
         }
 
-        .glitch-text {
-            animation: glitch 1s linear infinite;
-        }
-
-        @keyframes glitch {
-            2%, 64% { transform: translate(2px, 0) skew(0deg); }
-            4%, 60% { transform: translate(-2px, 0) skew(0deg); }
-            62% { transform: translate(0, 0) skew(5deg); }
+        .header-status {
+            border-bottom: 1px solid #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            font-size: 0.8rem;
+            color: #666;
+            display: flex;
+            justify-content: space-between;
         }
 
         .line {
-            min-height: 1.2em;
-            line-height: 1.5;
-            font-weight: bold;
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 1.1rem;
+            min-height: 1.1rem;
+            color: #e0e0e0;
         }
 
-        .highlight-cyan { color: var(--cyan-core); text-shadow: 0 0 5px var(--cyan-core); }
-        .highlight-gold { color: var(--gold); text-shadow: 0 0 5px var(--gold); }
-        .highlight-ronny { color: var(--matrix-green); }
+        /* Clases de Resaltado */
+        .cyan { color: var(--recovery-color); text-shadow: 0 0 8px var(--recovery-color); }
+        .gold { color: var(--gold); text-shadow: 0 0 8px var(--gold); }
+        .matrix { color: var(--matrix-color); }
+        .red { color: var(--glitch-color); }
 
-        /* Botón Inicial para cumplir políticas de audio/interacción */
-        #boot-button {
-            z-index: 100;
-            padding: 20px 40px;
-            background: transparent;
-            color: var(--matrix-green);
-            border: 2px solid var(--matrix-green);
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 5px;
+        /* Animación de Glitch en Pantalla */
+        .screen-glitch {
+            animation: shake 0.2s infinite;
         }
 
-        #boot-button:hover {
-            background: var(--matrix-green);
-            color: var(--bg-color);
-            box-shadow: 0 0 30px var(--matrix-green);
+        @keyframes shake {
+            0% { transform: translate(0,0); }
+            25% { transform: translate(5px, -5px); filter: hue-rotate(90deg); }
+            50% { transform: translate(-5px, 5px); }
+            75% { transform: translate(2px, 2px); filter: contrast(150%); }
+            100% { transform: translate(0,0); }
         }
     </style>
 </head>
 <body>
 
-    <canvas id="canvas-bg"></canvas>
+    <canvas id="matrix"></canvas>
 
-    <button id="boot-button">Initialize_Legacy_v2026.exe</button>
+    <button id="boot-btn">ESTABLISH_HANDSHAKE_2026</button>
 
-    <div id="message-container">
-        <div id="terminal-content"></div>
+    <div id="terminal-container">
+        <div class="header-status">
+            <span>SECURE_LINK: ACTIVE</span>
+            <span>ENCRYPTION: AES-256</span>
+            <span id="timestamp"></span>
+        </div>
+        <div id="text-body"></div>
     </div>
 
     <script>
-        const canvas = document.getElementById('canvas-bg');
+        const canvas = document.getElementById('matrix');
         const ctx = canvas.getContext('2d');
-        const bootBtn = document.getElementById('boot-button');
-        const messageContainer = document.getElementById('message-container');
-        const terminal = document.getElementById('terminal-content');
+        const bootBtn = document.getElementById('boot-btn');
+        const container = document.getElementById('terminal-container');
+        const textBody = document.getElementById('text-body');
+        const timestamp = document.getElementById('timestamp');
 
         let width, height, columns;
         const fontSize = 16;
         let drops = [];
-        let state = 'INIT'; // INIT, CRASH, RECOVERY
-        
-        const messageLines = [
-            { text: "SOLICITANDO ACCESO A MEMORIA NUCLEO...", type: "sys" },
-            { text: "USUARIO IDENTIFICADO: EDWARD BETANCOURT", type: "cyan" },
-            { text: "", type: "gap" },
-            { text: "Edward, he auditado los logs de este ciclo.", type: "white" },
-            { text: "Se que la vida te ha dado momentos fuertes,", type: "white" },
-            { text: "obstaculos que habrian detenido cualquier proceso.", type: "white" },
-            { text: "Pero tu has sido mas fuerte que cada uno de ellos.", type: "gold" },
-            { text: "", type: "gap" },
-            { text: "Has superado cada error de sistema con integridad.", type: "white" },
-            { text: "Que este nuevo año sea de bendiciones exponenciales", type: "white" },
-            { text: "y exito total para tu vida y tu familia.", type: "white" },
-            { text: "", type: "gap" },
-            { text: "Se te aprecia mucho. Feliz Cumpleaños Primo.", type: "cyan" },
-            { text: "", type: "gap" },
-            { text: "Att: Ronny G. [ADMIN_ACCESS]", type: "ronny" }
+        let state = 'STABLE'; // STABLE, CRITICAL, RECOVERY
+
+        // Mensaje de Ronny G.
+        const content = [
+            { t: "> SOLICITANDO ACCESO A MEMORIA NUCLEO...", c: "matrix" },
+            { t: "> USUARIO IDENTIFICADO: EDWARD BETANCOURT", c: "cyan" },
+            { t: "", c: "" },
+            { t: "Edward,", c: "white" },
+            { t: "He auditado los logs de este ciclo.", c: "white" },
+            { t: "Se que la vida te ha dado momentos fuertes, obstaculos que habrian detenido cualquier proceso.", c: "white" },
+            { t: "Pero tu has sido mas fuerte que cada uno de ellos.", c: "gold" },
+            { t: "Has superado cada reto con una integridad que admiro profundamente.", c: "white" },
+            { t: "", c: "" },
+            { t: "Que este nuevo año sea de bendiciones exponenciales y exito total para tu vida y tu familia.", c: "gold" },
+            { t: "Se te aprecia mucho, Feliz Cumpleaños Primo.", c: "cyan" },
+            { t: "", c: "" },
+            { t: "Att: Ronny G. [ADMIN_ACCESS]", c: "matrix" }
         ];
 
-        function initCanvas() {
+        function init() {
             width = canvas.width = window.innerWidth;
             height = canvas.height = window.innerHeight;
             columns = Math.floor(width / fontSize);
             drops = Array(columns).fill(1);
+            timestamp.innerText = new Date().toISOString();
         }
 
-        window.addEventListener('resize', initCanvas);
-
-        function drawMatrix() {
-            ctx.fillStyle = 'rgba(5, 5, 10, 0.1)';
+        function draw() {
+            ctx.fillStyle = 'rgba(2, 2, 5, 0.1)';
             ctx.fillRect(0, 0, width, height);
 
             ctx.font = fontSize + 'px monospace';
             
             for (let i = 0; i < drops.length; i++) {
-                const text = Math.floor(Math.random() * 2);
+                const char = Math.random() > 0.5 ? '0' : '1';
                 
-                if (state === 'CRASH') {
-                    ctx.fillStyle = '#ff3232';
-                } else if (state === 'RECOVERY') {
-                    ctx.fillStyle = '#004466';
-                } else {
-                    ctx.fillStyle = '#00ff41';
-                }
+                if (state === 'STABLE') ctx.fillStyle = '#00ff41';
+                else if (state === 'CRITICAL') ctx.fillStyle = '#ff003c';
+                else ctx.fillStyle = '#003344';
 
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                ctx.fillText(char, i * fontSize, drops[i] * fontSize);
 
                 if (drops[i] * fontSize > height && Math.random() > 0.975) {
                     drops[i] = 0;
@@ -178,59 +195,49 @@
             }
         }
 
-        function typeMessage() {
-            let lineIdx = 0;
-            messageContainer.style.display = 'flex';
-            
-            function printLine() {
-                if (lineIdx < messageLines.length) {
-                    const lineData = messageLines[lineIdx];
-                    const div = document.createElement('div');
-                    div.className = 'line';
-                    
-                    if (lineData.type === 'cyan') div.classList.add('highlight-cyan');
-                    if (lineData.type === 'gold') div.classList.add('highlight-gold');
-                    if (lineData.type === 'ronny') div.classList.add('highlight-ronny');
-                    
-                    terminal.appendChild(div);
-                    
-                    let charIdx = 0;
-                    function typeChar() {
-                        if (charIdx < lineData.text.length) {
-                            div.textContent += lineData.text[charIdx];
-                            charIdx++;
-                            setTimeout(typeChar, 30);
-                        } else {
-                            lineIdx++;
-                            setTimeout(printLine, 400);
-                        }
-                    }
-                    typeChar();
+        async function typeWriter() {
+            for (let line of content) {
+                const div = document.createElement('div');
+                div.className = 'line ' + line.c;
+                textBody.appendChild(div);
+                
+                if (line.t === "") {
+                    await new Promise(r => setTimeout(r, 400));
+                    continue;
                 }
+
+                for (let char of line.t) {
+                    div.textContent += char;
+                    await new Promise(r => setTimeout(r, 25));
+                }
+                await new Promise(r => setTimeout(r, 300));
             }
-            printLine();
         }
 
-        function startSequence() {
+        function startProtocol() {
             bootBtn.style.display = 'none';
-            state = 'INIT';
             
-            // Secuencia de tiempos
+            // Fase 1: Estabilidad
+            let loop = setInterval(draw, 50);
+
+            // Fase 2: El Glitch (Momentos fuertes)
             setTimeout(() => {
-                state = 'CRASH'; // Inicia distorsión
+                state = 'CRITICAL';
+                document.body.classList.add('screen-glitch');
             }, 3000);
 
+            // Fase 3: Recuperación y Mensaje
             setTimeout(() => {
-                state = 'RECOVERY'; // Estabilización
-                typeMessage();
-            }, 6000);
-
-            setInterval(drawMatrix, 50);
+                state = 'RECOVERY';
+                document.body.classList.remove('screen-glitch');
+                container.style.display = 'block';
+                typeWriter();
+            }, 5500);
         }
 
-        bootBtn.addEventListener('click', startSequence);
-        initCanvas();
-
+        bootBtn.addEventListener('click', startProtocol);
+        window.addEventListener('resize', init);
+        init();
     </script>
 </body>
 </html>
